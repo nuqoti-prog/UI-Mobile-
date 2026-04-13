@@ -53,10 +53,28 @@ p {
   border-radius: 12px;
   padding: 12px;
   display: grid;
-  gap: 8px;
+  gap: 10px;
 }
 
-.card-head,
+.article-card {
+  cursor: pointer;
+}
+
+.article-headline {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid #dbe3ef;
+}
+
 .card-foot {
   display: flex;
   align-items: center;
@@ -64,7 +82,8 @@ p {
   gap: 8px;
 }
 
-.card-head h3 {
+.card-head h3,
+.article-headline h3 {
   font-size: 17px;
 }
 
@@ -75,6 +94,7 @@ p {
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 600;
+  width: fit-content;
 }
 
 .toolbar-row {
@@ -173,13 +193,17 @@ small.muted,
   background: #dbeafe;
 }
 
-.hidden {
-  display: none;
-}
-
+.avatar-preview,
 .preview-image {
   width: 100%;
+  max-height: 220px;
+  object-fit: cover;
   border-radius: 12px;
+  border: 1px solid #dbe3ef;
+}
+
+.hidden {
+  display: none;
 }
 
 .preview-content figure {
@@ -204,8 +228,14 @@ small.muted,
 
 @media (max-width: 480px) {
   .toolbar-actions .btn,
-  .toolbar-row .btn {
+  .toolbar-row .btn,
+  .card-foot .btn {
     width: 100%;
+  }
+
+  .card-foot {
+    display: grid;
+    gap: 8px;
   }
 
   .topbar {

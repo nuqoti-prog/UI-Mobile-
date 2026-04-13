@@ -11,7 +11,6 @@ const MOCK_ARTICLES = [
     id: 'TIN-001',
     title: 'Nâng cấp hạ tầng số tại phường Mỹ Bình',
     summary: 'Hệ thống một cửa số hóa giúp xử lý hồ sơ nhanh hơn cho người dân.',
-    chapeau: 'Dự án ưu tiên nâng chất lượng phục vụ hành chính công.',
     status: 'Chờ duyệt',
     author: 'Ban biên tập',
     updatedAt: '2026-04-12 09:20',
@@ -19,9 +18,7 @@ const MOCK_ARTICLES = [
     subCategory: 'Chuyển đổi số',
     province: 'An Giang',
     keywords: ['chuyển đổi số', 'mỹ bình', 'hạ tầng'],
-    podcastUrl: 'https://example.com/podcast/tin-001.mp3',
     avatarUrl: 'https://picsum.photos/seed/tin-001/320/220',
-    avatarCaption: 'Cán bộ tiếp nhận hồ sơ tại bộ phận một cửa phường Mỹ Bình.',
     content:
       '<p>Phường Mỹ Bình triển khai hạ tầng số mới để hỗ trợ xử lý hồ sơ nhanh.</p><figure class="image"><img src="https://picsum.photos/seed/mybinh-content/640/360" alt="Mỹ Bình"><figcaption>Hệ thống máy chủ mới giúp đồng bộ dữ liệu hồ sơ.</figcaption></figure><p>Người dân có thể theo dõi trạng thái xử lý qua ứng dụng công trực tuyến.</p>'
   },
@@ -29,7 +26,6 @@ const MOCK_ARTICLES = [
     id: 'TIN-002',
     title: 'Khởi động chiến dịch du lịch hè An Giang',
     summary: 'Nhiều hoạt động trải nghiệm sẽ diễn ra từ tháng 5.',
-    chapeau: 'Các khu, điểm du lịch chuẩn bị sản phẩm mới cho mùa cao điểm.',
     status: 'Đang biên tập',
     author: 'Phòng nội dung',
     updatedAt: '2026-04-11 14:45',
@@ -37,9 +33,7 @@ const MOCK_ARTICLES = [
     subCategory: 'Sự kiện',
     province: 'An Giang',
     keywords: ['du lịch hè', 'an giang'],
-    podcastUrl: '',
     avatarUrl: 'https://picsum.photos/seed/tin-002/320/220',
-    avatarCaption: 'Du khách trải nghiệm tuyến tham quan sinh thái mùa hè.',
     content:
       '<p>Chiến dịch du lịch hè tập trung quảng bá các điểm đến sinh thái và văn hóa.</p>'
   }
@@ -83,9 +77,6 @@ export function createNewsManagementApp(root) {
     } else if (appState.currentScreen === 'list') {
       screenContainer.innerHTML = listTemplate();
       attachListEvents();
-    } else if (appState.currentScreen === 'detail') {
-      screenContainer.innerHTML = detailTemplate();
-      attachDetailEvents();
     } else if (appState.currentScreen === 'preview') {
       screenContainer.innerHTML = previewTemplate();
       attachPreviewEvents();
@@ -106,7 +97,7 @@ export function createNewsManagementApp(root) {
       <main class="mobile-shell">
         <header class="topbar">
           <h1>Sửa tin</h1>
-          <button class="btn btn-outline" id="backToDetailBtn">Về chi tiết tin</button>
+          <button class="btn btn-outline" id="backToListBtn">Về danh sách tin</button>
         </header>
         <section class="panel" id="editorHost"></section>
       </main>
@@ -118,7 +109,7 @@ export function createNewsManagementApp(root) {
       article,
       onSave: (draft) => {
         saveArticleDraft(draft);
-        appState.currentScreen = 'detail';
+        appState.currentScreen = 'list';
         render();
       },
       onPreview: (draft) => {
@@ -127,13 +118,13 @@ export function createNewsManagementApp(root) {
         render();
       },
       onBack: () => {
-        appState.currentScreen = 'detail';
+        appState.currentScreen = 'list';
         render();
       }
     });
 
-    root.querySelector('#backToDetailBtn')?.addEventListener('click', () => {
-      appState.currentScreen = 'detail';
+    root.querySelector('#backToListBtn')?.addEventListener('click', () => {
+      appState.currentScreen = 'list';
       render();
     });
   }
@@ -161,15 +152,18 @@ export function createNewsManagementApp(root) {
     const cards = appState.articles
       .map(
         (article) => `
-      <article class="card article-card" data-id="${article.id}">
-        <div class="card-head">
-          <h3>${article.title}</h3>
-          <span class="badge">${article.status}</span>
+      <article class="card article-card" data-open-editor="${article.id}" role="button" tabindex="0">
+        <div class="article-headline">
+          <img class="thumb" src="${article.avatarUrl}" alt="Ảnh đại diện ${article.title}" />
+          <div class="stack-xs">
+            <h3>${article.title}</h3>
+            <span class="badge">${article.status}</span>
+          </div>
         </div>
         <p>${article.summary}</p>
         <div class="card-foot">
           <small class="muted">${article.updatedAt}</small>
-          <button class="btn btn-primary btn-lg" data-open-detail="${article.id}">Xem chi tiết</button>
+          <button class="btn btn-primary btn-lg" data-open-editor="${article.id}" type="button">Sửa tin</button>
         </div>
       </article>`
       )
@@ -179,36 +173,6 @@ export function createNewsManagementApp(root) {
       <h2>Danh sách tin</h2>
       <p class="muted">Xin chào ${appState.technicianName}. Chọn một tin để thao tác.</p>
       <div class="stack-md">${cards}</div>
-    `;
-  }
-
-  function detailTemplate() {
-    const article = getSelectedArticle();
-
-    if (!article) {
-      return `
-        <h2>Không tìm thấy tin</h2>
-        <button class="btn btn-primary btn-lg" id="backToListBtn">Về danh sách</button>
-      `;
-    }
-
-    return `
-      <h2>Chi tiết tin</h2>
-      <article class="card stack-sm">
-        <h3>${article.title}</h3>
-        <p><strong>Mã tin:</strong> ${article.id}</p>
-        <p><strong>Tác giả:</strong> ${article.author}</p>
-        <p><strong>Trạng thái:</strong> ${article.status}</p>
-        <p><strong>Cập nhật:</strong> ${article.updatedAt}</p>
-        <p><strong>Chuyên mục:</strong> ${article.category} / ${article.subCategory}</p>
-        <p><strong>Tỉnh:</strong> ${article.province}</p>
-        <p><strong>Từ khóa:</strong> ${article.keywords.join(', ')}</p>
-        <p>${article.summary}</p>
-      </article>
-      <div class="toolbar-row toolbar-actions">
-        <button class="btn btn-outline btn-lg" id="backToListBtn">Về danh sách tin</button>
-        <button class="btn btn-primary btn-lg" id="openEditorBtn">Sửa tin</button>
-      </div>
     `;
   }
 
@@ -225,9 +189,7 @@ export function createNewsManagementApp(root) {
       <h2>Xem trước tin</h2>
       <article class="card stack-sm">
         <h3>${draft.title}</h3>
-        <p class="muted">${draft.chapeau}</p>
         <img class="preview-image" src="${draft.avatarUrl}" alt="${draft.title}" />
-        <p class="muted">${draft.avatarCaption}</p>
         <p>${draft.summary}</p>
         <div class="preview-content">${draft.content}</div>
       </article>
@@ -257,24 +219,20 @@ export function createNewsManagementApp(root) {
   }
 
   function attachListEvents() {
-    root.querySelectorAll('[data-open-detail]').forEach((button) => {
-      button.addEventListener('click', () => {
-        appState.selectedArticleId = button.getAttribute('data-open-detail');
-        appState.currentScreen = 'detail';
+    root.querySelectorAll('[data-open-editor]').forEach((item) => {
+      const openEditor = () => {
+        appState.selectedArticleId = item.getAttribute('data-open-editor');
+        appState.currentScreen = 'editor';
         render();
+      };
+
+      item.addEventListener('click', openEditor);
+      item.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openEditor();
+        }
       });
-    });
-  }
-
-  function attachDetailEvents() {
-    root.querySelector('#backToListBtn')?.addEventListener('click', () => {
-      appState.currentScreen = 'list';
-      render();
-    });
-
-    root.querySelector('#openEditorBtn')?.addEventListener('click', () => {
-      appState.currentScreen = 'editor';
-      render();
     });
   }
 
@@ -286,27 +244,22 @@ export function createNewsManagementApp(root) {
   }
 
   function getSelectedArticle() {
-    return appState.articles.find((article) => article.id === appState.selectedArticleId) || null;
+    return appState.articles.find((item) => item.id === appState.selectedArticleId) || null;
   }
 
   function saveArticleDraft(draft) {
-    const index = appState.articles.findIndex((article) => article.id === appState.selectedArticleId);
-    if (index < 0) {
-      return;
-    }
+    appState.articles = appState.articles.map((item) => {
+      if (item.id !== draft.id) {
+        return item;
+      }
 
-    appState.articles[index] = {
-      ...appState.articles[index],
-      ...draft,
-      updatedAt: formatNowUtc()
-    };
+      return {
+        ...item,
+        ...draft,
+        updatedAt: new Date().toISOString().slice(0, 16).replace('T', ' ')
+      };
+    });
   }
 
   render();
-}
-
-function formatNowUtc() {
-  const now = new Date();
-  const pad = (value) => String(value).padStart(2, '0');
-  return `${now.getUTCFullYear()}-${pad(now.getUTCMonth() + 1)}-${pad(now.getUTCDate())} ${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
 }
