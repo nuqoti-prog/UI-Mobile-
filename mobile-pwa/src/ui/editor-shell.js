@@ -5,26 +5,26 @@ import { detectProvince } from '../core/province-engine.js';
 import { normalizeCaption } from '../extensions/image-caption.js';
 import { showToast } from '../extensions/toast.js';
 
-export function createEditor(root) {
+export function createEditor(root, options = {}) {
   const state = new ArticleState();
 
   root.innerHTML = `
-    <main class="mobile-shell">
-      <section class="panel">
-        <div class="toolbar-row">
-          <button id="syncBtn">Sync trạng thái</button>
-          <button id="keywordBtn">Auto keyword</button>
-          <button id="provinceBtn">Auto địa phương</button>
-        </div>
-        <div id="editor"></div>
-        <p><small class="muted" id="meta"></small></p>
-      </section>
-    </main>
+    <section>
+      <div class="toolbar-row">
+        <button class="btn btn-primary" id="syncBtn">Sync trạng thái</button>
+        <button class="btn btn-primary" id="keywordBtn">Auto keyword</button>
+        <button class="btn btn-primary" id="provinceBtn">Auto địa phương</button>
+      </div>
+      <div id="editor"></div>
+      <p><small class="muted" id="meta"></small></p>
+    </section>
   `;
 
   const meta = root.querySelector('#meta');
 
-  ClassicEditor.create(root.querySelector('#editor')).then((editor) => {
+  ClassicEditor.create(root.querySelector('#editor'), {
+    initialData: options.initialData || '<p>Nhập nội dung bài viết...</p>'
+  }).then((editor) => {
     const syncBtn = root.querySelector('#syncBtn');
     const keywordBtn = root.querySelector('#keywordBtn');
     const provinceBtn = root.querySelector('#provinceBtn');
