@@ -1,4 +1,4 @@
 import './styles.css';
-import { createEditor } from './ui/editor-shell.js';
+import { createNewsManagementApp } from './ui/news-management-shell.js';
 
-createEditor(document.getElementById('app'));
+createNewsManagementApp(document.getElementById('app'));

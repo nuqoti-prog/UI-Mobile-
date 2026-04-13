@@ -4,7 +4,18 @@
   background: #f5f7fb;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 body {
+  margin: 0;
+}
+
+h1,
+h2,
+h3,
+p {
   margin: 0;
 }
 
@@ -12,32 +23,123 @@ body {
   max-width: 768px;
   margin: 0 auto;
   padding: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.topbar h1 {
+  font-size: 20px;
 }
 
 .panel {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  padding: 14px;
+  display: grid;
+  gap: 14px;
+}
+
+.card {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
   padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.card-head,
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.card-head h3 {
+  font-size: 17px;
+}
+
+.badge {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .toolbar-row {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 10px;
   flex-wrap: wrap;
 }
 
-button {
-  border: 0;
-  border-radius: 8px;
-  padding: 8px 10px;
-  background: #0d6efd;
-  color: #fff;
-  font-weight: 600;
+.toolbar-actions {
+  margin-bottom: 0;
 }
 
-small.muted {
+.btn {
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-lg {
+  min-height: 48px;
+}
+
+.btn-primary {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.btn-outline {
+  background: #fff;
+  color: #0d6efd;
+  border-color: #bfdbfe;
+}
+
+.input {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 0 10px;
+  font-size: 16px;
+}
+
+.stack-xs,
+.stack-sm,
+.stack-md {
+  display: grid;
+}
+
+.stack-xs {
+  gap: 6px;
+}
+
+.stack-sm {
+  gap: 8px;
+}
+
+.stack-md {
+  gap: 12px;
+}
+
+small.muted,
+.muted {
   color: #6b7280;
 }
 
@@ -50,4 +152,11 @@ small.muted {
   color: #fff;
   padding: 10px 14px;
   border-radius: 10px;
+}
+
+@media (max-width: 480px) {
+  .toolbar-actions .btn,
+  .toolbar-row .btn {
+    width: 100%;
+  }
 }

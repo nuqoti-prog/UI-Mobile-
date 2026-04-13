@@ -3,7 +3,9 @@
 Ứng dụng mobile PWA chuẩn bị cho Android, dùng CKEditor 5 và tách core logic khỏi extension.
 
 ## Tính năng chính
-- Soạn thảo/format nội dung bằng CKEditor 5.
+- Luồng quản lý tin mobile cho kỹ thuật viên: Đăng nhập -> Danh sách tin -> Chi tiết tin -> Mở editor.
+- UI card + nút lớn, dễ thao tác trên màn hình cảm ứng.
+- Soạn thảo/format nội dung bằng CKEditor 5 (giữ editor hiện tại để mở rộng bước sau).
 - Xử lý ảnh + caption.
 - Gợi ý auto keyword.
 - Gợi ý auto địa phương.
