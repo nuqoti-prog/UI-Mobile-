@@ -1,0 +1,12 @@
+{
+  "name": "ui-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local npm setup for CKEditor 5 using only public packages.",
+  "scripts": {
+    "install:check": "npm ls @ckeditor/ckeditor5-build-classic"
+  },
+  "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^41.4.2"
+  }
+}
