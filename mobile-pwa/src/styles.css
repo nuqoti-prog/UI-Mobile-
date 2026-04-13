@@ -120,6 +120,10 @@ p {
   font-size: 16px;
 }
 
+.textarea {
+  padding: 10px;
+}
+
 .stack-xs,
 .stack-sm,
 .stack-md {
@@ -143,6 +147,50 @@ small.muted,
   color: #6b7280;
 }
 
+.edit-news .editor-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.segmented-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.segmented-tab {
+  border: 1px solid #bfdbfe;
+  background: #fff;
+  color: #1d4ed8;
+  border-radius: 10px;
+  min-height: 44px;
+  font-weight: 700;
+}
+
+.segmented-tab.is-active {
+  background: #dbeafe;
+}
+
+.hidden {
+  display: none;
+}
+
+.preview-image {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.preview-content figure {
+  margin: 0;
+}
+
+.preview-content img {
+  width: 100%;
+  border-radius: 10px;
+}
+
 .toast {
   position: fixed;
   left: 50%;
@@ -158,5 +206,14 @@ small.muted,
   .toolbar-actions .btn,
   .toolbar-row .btn {
     width: 100%;
+  }
+
+  .topbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .segmented-tabs {
+    grid-template-columns: 1fr;
   }
 }

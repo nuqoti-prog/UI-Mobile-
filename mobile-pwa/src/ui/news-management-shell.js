@@ -10,32 +10,38 @@ const MOCK_ARTICLES = [
   {
     id: 'TIN-001',
     title: 'Nâng cấp hạ tầng số tại phường Mỹ Bình',
-    summary: 'Hệ thống mới giúp xử lý hồ sơ nhanh hơn cho người dân.',
+    summary: 'Hệ thống một cửa số hóa giúp xử lý hồ sơ nhanh hơn cho người dân.',
+    chapeau: 'Dự án ưu tiên nâng chất lượng phục vụ hành chính công.',
     status: 'Chờ duyệt',
     author: 'Ban biên tập',
     updatedAt: '2026-04-12 09:20',
+    category: 'Thời sự',
+    subCategory: 'Chuyển đổi số',
+    province: 'An Giang',
+    keywords: ['chuyển đổi số', 'mỹ bình', 'hạ tầng'],
+    podcastUrl: 'https://example.com/podcast/tin-001.mp3',
+    avatarUrl: 'https://picsum.photos/seed/tin-001/320/220',
+    avatarCaption: 'Cán bộ tiếp nhận hồ sơ tại bộ phận một cửa phường Mỹ Bình.',
     content:
-      '<p>Phường Mỹ Bình triển khai hệ thống hạ tầng số mới để hỗ trợ xử lý hồ sơ nhanh.</p><p><figure class="image"><img src="https://picsum.photos/320/200" alt="Mỹ Bình"><figcaption>Hạ tầng mới tại phường Mỹ Bình</figcaption></figure></p>'
+      '<p>Phường Mỹ Bình triển khai hạ tầng số mới để hỗ trợ xử lý hồ sơ nhanh.</p><figure class="image"><img src="https://picsum.photos/seed/mybinh-content/640/360" alt="Mỹ Bình"><figcaption>Hệ thống máy chủ mới giúp đồng bộ dữ liệu hồ sơ.</figcaption></figure><p>Người dân có thể theo dõi trạng thái xử lý qua ứng dụng công trực tuyến.</p>'
   },
   {
     id: 'TIN-002',
     title: 'Khởi động chiến dịch du lịch hè An Giang',
-    summary: 'Nhiều hoạt động trải nghiệm được tổ chức từ tháng 5.',
+    summary: 'Nhiều hoạt động trải nghiệm sẽ diễn ra từ tháng 5.',
+    chapeau: 'Các khu, điểm du lịch chuẩn bị sản phẩm mới cho mùa cao điểm.',
     status: 'Đang biên tập',
     author: 'Phòng nội dung',
     updatedAt: '2026-04-11 14:45',
+    category: 'Du lịch',
+    subCategory: 'Sự kiện',
+    province: 'An Giang',
+    keywords: ['du lịch hè', 'an giang'],
+    podcastUrl: '',
+    avatarUrl: 'https://picsum.photos/seed/tin-002/320/220',
+    avatarCaption: 'Du khách trải nghiệm tuyến tham quan sinh thái mùa hè.',
     content:
       '<p>Chiến dịch du lịch hè tập trung quảng bá các điểm đến sinh thái và văn hóa.</p>'
-  },
-  {
-    id: 'TIN-003',
-    title: 'Kế hoạch chỉnh trang tuyến đường ven sông',
-    summary: 'Dự kiến hoàn thiện giai đoạn 1 trước quý III.',
-    status: 'Đã xuất bản',
-    author: 'Tổ đô thị',
-    updatedAt: '2026-04-10 18:10',
-    content:
-      '<p>Tuyến đường ven sông được chỉnh trang để phục vụ giao thông và cảnh quan đô thị.</p>'
   }
 ];
 
@@ -43,8 +49,10 @@ export function createNewsManagementApp(root) {
   const appState = {
     currentScreen: 'login',
     selectedArticleId: null,
+    previewDraft: null,
     isLoggedIn: false,
-    technicianName: ''
+    technicianName: '',
+    articles: structuredClone(MOCK_ARTICLES)
   };
 
   function render() {
@@ -78,12 +86,16 @@ export function createNewsManagementApp(root) {
     } else if (appState.currentScreen === 'detail') {
       screenContainer.innerHTML = detailTemplate();
       attachDetailEvents();
+    } else if (appState.currentScreen === 'preview') {
+      screenContainer.innerHTML = previewTemplate();
+      attachPreviewEvents();
     }
 
     root.querySelector('#logoutBtn')?.addEventListener('click', () => {
       appState.currentScreen = 'login';
       appState.isLoggedIn = false;
       appState.selectedArticleId = null;
+      appState.previewDraft = null;
       appState.technicianName = '';
       render();
     });
@@ -93,7 +105,7 @@ export function createNewsManagementApp(root) {
     root.innerHTML = `
       <main class="mobile-shell">
         <header class="topbar">
-          <h1>Editor bài viết</h1>
+          <h1>Sửa tin</h1>
           <button class="btn btn-outline" id="backToDetailBtn">Về chi tiết tin</button>
         </header>
         <section class="panel" id="editorHost"></section>
@@ -103,7 +115,21 @@ export function createNewsManagementApp(root) {
     const article = getSelectedArticle();
     const editorHost = root.querySelector('#editorHost');
     createEditor(editorHost, {
-      initialData: article?.content || '<p>Nhập nội dung tại đây...</p>'
+      article,
+      onSave: (draft) => {
+        saveArticleDraft(draft);
+        appState.currentScreen = 'detail';
+        render();
+      },
+      onPreview: (draft) => {
+        appState.previewDraft = draft;
+        appState.currentScreen = 'preview';
+        render();
+      },
+      onBack: () => {
+        appState.currentScreen = 'detail';
+        render();
+      }
     });
 
     root.querySelector('#backToDetailBtn')?.addEventListener('click', () => {
@@ -132,8 +158,9 @@ export function createNewsManagementApp(root) {
   }
 
   function listTemplate() {
-    const cards = MOCK_ARTICLES.map(
-      (article) => `
+    const cards = appState.articles
+      .map(
+        (article) => `
       <article class="card article-card" data-id="${article.id}">
         <div class="card-head">
           <h3>${article.title}</h3>
@@ -145,7 +172,8 @@ export function createNewsManagementApp(root) {
           <button class="btn btn-primary btn-lg" data-open-detail="${article.id}">Xem chi tiết</button>
         </div>
       </article>`
-    ).join('');
+      )
+      .join('');
 
     return `
       <h2>Danh sách tin</h2>
@@ -172,11 +200,39 @@ export function createNewsManagementApp(root) {
         <p><strong>Tác giả:</strong> ${article.author}</p>
         <p><strong>Trạng thái:</strong> ${article.status}</p>
         <p><strong>Cập nhật:</strong> ${article.updatedAt}</p>
+        <p><strong>Chuyên mục:</strong> ${article.category} / ${article.subCategory}</p>
+        <p><strong>Tỉnh:</strong> ${article.province}</p>
+        <p><strong>Từ khóa:</strong> ${article.keywords.join(', ')}</p>
         <p>${article.summary}</p>
       </article>
       <div class="toolbar-row toolbar-actions">
         <button class="btn btn-outline btn-lg" id="backToListBtn">Về danh sách tin</button>
-        <button class="btn btn-primary btn-lg" id="openEditorBtn">Mở editor</button>
+        <button class="btn btn-primary btn-lg" id="openEditorBtn">Sửa tin</button>
+      </div>
+    `;
+  }
+
+  function previewTemplate() {
+    const draft = appState.previewDraft;
+    if (!draft) {
+      return `
+        <h2>Chưa có dữ liệu xem trước</h2>
+        <button class="btn btn-primary btn-lg" id="backToEditorBtn">Về màn sửa tin</button>
+      `;
+    }
+
+    return `
+      <h2>Xem trước tin</h2>
+      <article class="card stack-sm">
+        <h3>${draft.title}</h3>
+        <p class="muted">${draft.chapeau}</p>
+        <img class="preview-image" src="${draft.avatarUrl}" alt="${draft.title}" />
+        <p class="muted">${draft.avatarCaption}</p>
+        <p>${draft.summary}</p>
+        <div class="preview-content">${draft.content}</div>
+      </article>
+      <div class="toolbar-row toolbar-actions">
+        <button class="btn btn-outline btn-lg" id="backToEditorBtn">Quay lại sửa</button>
       </div>
     `;
   }
@@ -222,9 +278,35 @@ export function createNewsManagementApp(root) {
     });
   }
 
+  function attachPreviewEvents() {
+    root.querySelector('#backToEditorBtn')?.addEventListener('click', () => {
+      appState.currentScreen = 'editor';
+      render();
+    });
+  }
+
   function getSelectedArticle() {
-    return MOCK_ARTICLES.find((article) => article.id === appState.selectedArticleId) || null;
+    return appState.articles.find((article) => article.id === appState.selectedArticleId) || null;
+  }
+
+  function saveArticleDraft(draft) {
+    const index = appState.articles.findIndex((article) => article.id === appState.selectedArticleId);
+    if (index < 0) {
+      return;
+    }
+
+    appState.articles[index] = {
+      ...appState.articles[index],
+      ...draft,
+      updatedAt: formatNowUtc()
+    };
   }
 
   render();
+}
+
+function formatNowUtc() {
+  const now = new Date();
+  const pad = (value) => String(value).padStart(2, '0');
+  return `${now.getUTCFullYear()}-${pad(now.getUTCMonth() + 1)}-${pad(now.getUTCDate())} ${pad(now.getUTCHours())}:${pad(now.getUTCMinutes())}`;
 }
