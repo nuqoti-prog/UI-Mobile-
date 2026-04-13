@@ -1,0 +1,27 @@
+AGO Support review notes
+
+Changes made before Chrome Web Store resubmission:
+- Set manifest version to 1.6.1
+- Removed unused 'alarms' permission
+- Removed 'host_permissions: ["<all_urls>"]'
+- Left content_scripts matches unchanged so site-wide toast/popup injection can still work if implemented through content scripts
+- Removed backup/temp files: content/crm-status-sync.js.bak, content/crm-status-sync.js.pre_fix2
+
+Quick permission usage scan:
+- notifications: used
+- storage: used
+- tabs: used
+- alarms: not found
+- scripting: not found
+
+Reminder:
+- Chrome Web Store privacy policy URL must point directly to a public privacy-policy page, not a homepage.
+- If your extension truly shows UI on every site, keeping <all_urls> in content_scripts.matches is expected; avoid broad host_permissions unless code requires it.
+
+[V3.0.0]
+- Nâng cấp widget TÊN NHANH tác giả
+- Kéo thả đổi thứ tự
+- + Thêm tạo badge nhập tên
+- Chọn/gõ tên tác giả tự tick Nhuận bút Có; xóa tên sẽ về Không
+- Click vào CKEditor/iframe sẽ tự đóng menu tác giả nhanh
+- Menu Gợi ý auto-province tự đóng khi click/focus vào CKEditor

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AGO SUPPORT</title>
+<style>
+  :root{
+    --bg:#f5f7fb;
+    --card:#ffffff;
+    --line:#e5e7eb;
+    --text:#111827;
+    --muted:#6b7280;
+    --blue:#2563eb;
+    --blue-soft:#eaf2ff;
+    --success:#0b8f4d;
+    --error:#c62828;
+    --shadow:0 10px 28px rgba(17,24,39,.08);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    width:360px;
+    background:linear-gradient(180deg,#f8fafc 0%, #eef2f7 100%);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    color:var(--text);
+    padding:14px;
+  }
+  .wrap{display:flex;flex-direction:column;gap:12px}
+  .card{
+    background:var(--card);
+    border:1px solid #e6ebf2;
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  .hero{padding:14px 14px 12px;text-align:center}
+  .badge{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-height:32px;padding:0 14px;border-radius:999px;
+    background:linear-gradient(180deg,#2e6cf6 0%, #1f5cd7 100%);
+    color:#fff;font-size:14px;font-weight:700;box-shadow:0 6px 16px rgba(37,99,235,.22);
+    margin-bottom:8px;
+  }
+  .hero p{margin:0;font-size:12px;line-height:1.5;color:var(--muted)}
+  .option{display:flex;gap:12px;padding:12px 14px;border-top:1px solid #eef2f7}
+  .option:first-child{border-top:none}
+  .icon{
+    width:34px;height:34px;min-width:34px;border-radius:11px;display:flex;
+    align-items:center;justify-content:center;background:var(--blue-soft);color:var(--blue);
+    border:1px solid #dbe7ff;
+  }
+  .content{flex:1;min-width:0}
+  .row{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .title{font-size:14px;font-weight:650;margin:0 0 3px 0}
+  .desc{font-size:12px;line-height:1.45;color:var(--muted);margin:0;padding-right:4px}
+  .switch{position:relative;width:42px;min-width:42px;height:26px;display:inline-block}
+  .switch input{opacity:0;width:0;height:0}
+  .slider{position:absolute;inset:0;cursor:pointer;background:#d1d5db;transition:.22s ease;border-radius:999px}
+  .slider:before{content:"";position:absolute;height:22px;width:22px;left:2px;top:2px;background:#fff;transition:.22s ease;border-radius:50%;box-shadow:0 2px 6px rgba(0,0,0,.16)}
+  .switch input:checked + .slider{background:var(--blue)}
+  .switch input:checked + .slider:before{transform:translateX(16px)}
+  .toolbar{display:flex;justify-content:center;gap:8px}
+  .btn{
+    min-width:98px;height:34px;border-radius:10px;border:1px solid #d7dce3;
+    background:linear-gradient(180deg,#fff 0%, #f7f8fa 100%);
+    color:#374151;font-size:12px;font-weight:600;cursor:pointer;
+  }
+  .btn.primary{background:linear-gradient(180deg,#2e6cf6 0%, #1f5cd7 100%);color:#fff;border-color:#1f5cd7}
+  .section{padding:12px 14px}
+  .section-title{font-size:12px;font-weight:700;color:#374151;margin:0 0 8px 0}
+  .sources{display:flex;flex-direction:column;gap:8px}
+  .source{display:grid;grid-template-columns:10px 1fr;gap:8px;align-items:start}
+  .dot{width:6px;height:6px;border-radius:50%;background:#94a3b8;margin-top:6px;margin-left:2px}
+  .source-name{font-size:12px;line-height:1.35;color:#374151;font-weight:600;margin:0 0 2px 0}
+  .source-link{font-size:12px;line-height:1.4;color:#2563eb;text-decoration:none;word-break:break-all}
+  .source-link:hover{text-decoration:underline}
+  #status{min-height:16px;text-align:center;font-size:12px;color:var(--success)}
+  .credit{text-align:center;font-size:12px;color:#4b5563}
+  .credit b{color:#111827}
+
+  .live-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .live-stat{border:1px solid #e6ebf2;border-radius:16px;padding:10px 12px;background:linear-gradient(180deg,#fff 0%,#f8fbff 100%)}
+  .live-stat.red{background:#fde8e8;border-color:#e8a7a7}
+  .live-stat.blue{background:#e8f3ff;border-color:#9ec5ef}
+  .live-stat.green{background:#e9f8ec;border-color:#a9d6af}
+  .live-stat.purple{background:#fdeafb;border-color:#e2b3da}
+  .live-label{font-size:11px;color:#6b7280;font-weight:700;margin:0 0 4px 0}
+  .live-stat.red .live-label,.live-stat.red .live-value{color:#b42318}
+  .live-stat.blue .live-label,.live-stat.blue .live-value{color:#165ca8}
+  .live-stat.green .live-label,.live-stat.green .live-value{color:#18794e}
+  .live-stat.purple .live-label,.live-stat.purple .live-value{color:#a32d7c}
+  .live-value{font-size:24px;line-height:1;font-weight:800;color:#111827;margin:0}
+  .live-meta{margin-top:8px;font-size:11px;color:#6b7280}
+
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card hero">
+      <div class="badge">AGO Support</div>
+      <p>Bật hoặc tắt nhanh tính năng. Sau khi thay đổi cấu hình, hãy tải lại trang để áp dụng.</p>
+    </div>
+
+    
+    <div class="card">
+      <div class="option"><div class="icon">📊</div><div class="content"><div class="row"><div><div class="title">POP-UP Status</div><p class="desc">Hiển thị Pop-up</p></div><label class="switch"><input type="checkbox" id="featureCMSStatus" checked /><span class="slider"></span></label></div></div></div>
+      <div class="option"><div class="icon">🛠️</div><div class="content"><div class="row"><div><div class="title">Toolbar</div><p class="desc">Hiển thị thanh công cụ hỗ trợ</p></div><label class="switch"><input type="checkbox" id="featureToolbar" checked /><span class="slider"></span></label></div></div></div>
+      <div class="option"><div class="icon">🔍</div><div class="content"><div class="row"><div><div class="title">Spellcheck CKEditor</div><p class="desc">Bật gói kiểm tra chính tả nền tách riêng để có thể nâng cấp sau này</p></div><label class="switch"><input type="checkbox" id="featureSpellcheck" checked /><span class="slider"></span></label></div></div></div>
+      <div class="option"><div class="icon">🏷️</div><div class="content"><div class="row"><div><div class="title">Auto Fill Keyword</div><p class="desc">Tự động điền từ khóa </p></div><label class="switch"><input type="checkbox" id="featureAutoFill" checked /><span class="slider"></span></label></div></div></div>
+      <div class="option"><div class="icon">📍</div><div class="content"><div class="row"><div><div class="title">Auto Địa phương</div><p class="desc">Tự động nhận diện địa phương</p></div><label class="switch"><input type="checkbox" id="featureAutoProvince" checked /><span class="slider"></span></label></div></div></div>
+      <div class="option"><div class="icon">🔗</div><div class="content"><div class="row"><div><div class="title">Get Link</div><p class="desc">Lấy nhanh nội dung từ nguồn liên kết</p></div><label class="switch"><input type="checkbox" id="featureImportLinks" checked /><span class="slider"></span></label></div></div></div>
+      <div class="option"><div class="icon">👤</div><div class="content"><div class="row"><div><div class="title">Tên nhanh tác giả</div><p class="desc">Hiện nút 👤+ cạnh ô Tác giả để chọn, thêm, sửa và xóa tên hay dùng</p></div><label class="switch"><input type="checkbox" id="featureAuthorQuick" checked /><span class="slider"></span></label></div></div></div>
+    </div>
+
+    <div class="toolbar">
+      <button class="btn" id="resetBtn">Mặc định</button>
+      <button class="btn primary" id="saveBtn">Lưu</button>
+    </div>
+
+    <div id="status"></div>
+
+    <div class="card section">
+      <div class="section-title">Danh sách đã Ký kết</div>
+      <div class="sources">
+        <div class="source"><div class="dot"></div><div><div class="source-name">Báo Nhân Dân</div><a class="source-link" href="https://nhandan.vn/" target="_blank">https://nhandan.vn/</a></div></div>
+        <div class="source"><div class="dot"></div><div><div class="source-name">Báo Tin Tức</div><a class="source-link" href="https://baotintuc.vn/" target="_blank">https://baotintuc.vn/</a></div></div>
+        <div class="source"><div class="dot"></div><div><div class="source-name">VietnamPlus</div><a class="source-link" href="https://www.vietnamplus.vn/" target="_blank">https://www.vietnamplus.vn/</a></div></div>
+        <div class="source"><div class="dot"></div><div><div class="source-name">Quân đội nhân dân</div><a class="source-link" href="https://www.qdnd.vn/" target="_blank">https://www.qdnd.vn/</a></div></div>
+        <div class="source"><div class="dot"></div><div><div class="source-name">Bóng Đá</div><a class="source-link" href="https://bongda.com.vn/" target="_blank">https://bongda.com.vn/</a></div></div>
+        <div class="source"><div class="dot"></div><div><div class="source-name">VTC News</div><a class="source-link" href="https://vtcnews.vn/" target="_blank">https://vtcnews.vn/</a></div></div>
+		<div class="source"><div class="dot"></div><div><div class="source-name">Tuổi Trẻ</div><a class="source-link" href="https://vtcnews.vn/" target="_blank">https://tuoitre.vn/</a></div></div>
+      </div>
+    </div>
+
+    <div class="credit">Developed by <b>Trí Nguyễn</b></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

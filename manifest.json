@@ -1,0 +1,123 @@
+{
+  "manifest_version": 3,
+  "name": "AGO Support",
+  "version": "3.0.1",
+  "description": "AGO Support with lightweight CKEditor 4 native spellcheck support.",
+  "permissions": [
+    "notifications",
+    "storage",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "AGO Support",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://crmag.baoangiang.com.vn/*"
+      ],
+      "js": [
+        "content/edit-return-index.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://crmag.baoangiang.com.vn/*"
+      ],
+      "js": [
+        "content/boot-crm.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "exclude_matches": [
+        "https://crmag.baoangiang.com.vn/*"
+      ],
+      "js": [
+        "content/boot-baoangiang.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content/boot-getlink.js"
+      ],
+      "run_at": "document_idle",
+      "exclude_matches": [
+        "https://crmag.baoangiang.com.vn/*"
+      ]
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content/crmag-role-popup.js"
+      ],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://crmag.baoangiang.com.vn/*"
+      ],
+      "js": [
+        "content/crm-status-sync.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content/global-status-toast.js"
+      ],
+      "run_at": "document_idle",
+      "exclude_matches": [
+        "https://crmag.baoangiang.com.vn/*"
+      ]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "vendor/mammoth.browser.min.js",
+        "content/toolbar.js",
+        "content/pastelink.js",
+        "content/auto-fill-keyword.js",
+        "content/auto-province.js",
+        "content/getlink.js",
+        "content/spellcheck-crm.js",
+        "content/author-quick.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    },
+    {
+      "resources": [
+        "content/crm-page-request-bridge.js"
+      ],
+      "matches": [
+        "https://crmag.baoangiang.com.vn/*"
+      ]
+    }
+  ]
+}
